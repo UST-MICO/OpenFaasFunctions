@@ -1,0 +1,11 @@
+version: 1.0
+provider:
+  name: openfaas
+  gateway: http://127.0.0.1:8080
+functions:
+  faas-message-transformer:
+    lang: python3
+    handler: ./faas-message-transformer
+    image: ustmico/faas-message-transformer:latest
+    environment:
+      write_debug: true
