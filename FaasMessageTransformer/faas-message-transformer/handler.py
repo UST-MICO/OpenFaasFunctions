@@ -5,7 +5,5 @@ def handle(req):
         req (str): request body
     """
     message = json.loads(req)
-    if "extensions" not in message:
-        message["extensions"] = []
-    message["extensions"].append({"examplekey":"exampleValue"})
+    message["exampleKey"] = "exampleValue"
     return json.dumps([message])
