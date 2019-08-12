@@ -5,7 +5,7 @@ from json import loads
 class TestFlatten:
 
     def test_handle(self):
-        req = req = '{\
+        req = '{\
             "specversion" : "0.2",\
             "type" : "io.github.ust.mico.result",\
             "source" : "/router",\

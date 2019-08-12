@@ -1,4 +1,4 @@
-from element_remover.handler import *
+from remove_elements.handler import *
 from json import loads
 
 
