@@ -1,7 +1,7 @@
 # Element Remover
 
 This function can be used to filter out certain elements from an incoming message.
-The elements, that shall be removed are referenced by the user in the variable 'keys'.
+The elements, that shall be removed are referenced manually by the user in the variable 'keys'.
 
 #### Example
 In `element_remover/handler.py` the variable `keys` holds the following values: 
