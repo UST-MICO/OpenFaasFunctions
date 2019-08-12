@@ -16,8 +16,8 @@ def handle(req):
     Args:
         req (str): request body
     """
-    msg_in = json.loads(req)
-    msg_out = {key: value for key, value in msg_in.items()
+    msg = json.loads(req)
+    msg['data'] = {key: value for key, value in msg['data'].items()
                if key not in keys}
-    return json.dumps(msg_out)
+    return json.dumps(msg)
 
