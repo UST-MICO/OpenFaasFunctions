@@ -18,11 +18,11 @@ func TestHandle(t *testing.T) {
 			"key" : "value"
 		}
 	}`)
-	keys := []string{"key", "val_1", "val_2"}
+	keys := []string{"key", "added_val_1", "added_val_2"}
 	var responseData map[string]interface{}
 	response := Handle(req)
 	// fmt.Println(string(response))
-	json.Unmarshal(response, &responseData)
+	json.Unmarshal([]byte(response), &responseData)
 	data := responseData["data"].(map[string]interface{})
 	for dkey, _ := range data {
 		found := 0
