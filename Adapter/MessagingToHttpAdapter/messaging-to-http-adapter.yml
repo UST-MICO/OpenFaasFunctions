@@ -5,4 +5,4 @@ functions:
   messaging-to-http-adapter:
     lang: java8
     handler: ./messaging-to-http-adapter
-    image: messaging-to-http-adapter:latest
+    image: ustmico/messaging-to-http-adapter:latest
