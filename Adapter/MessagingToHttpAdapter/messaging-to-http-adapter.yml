@@ -1,0 +1,8 @@
+provider:
+  name: openfaas
+  gateway: http://127.0.0.1:8080
+functions:
+  messaging-to-http-adapter:
+    lang: java8
+    handler: ./messaging-to-http-adapter
+    image: messaging-to-http-adapter:latest
