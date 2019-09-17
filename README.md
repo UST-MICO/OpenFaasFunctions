@@ -13,6 +13,7 @@ Deploy function:
 ```bash
 faas deploy
 ```
+Using up instand of deploy results in a build, push and deploy.
 
 **Kubernetes:**
 

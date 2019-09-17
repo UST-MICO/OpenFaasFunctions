@@ -12,6 +12,9 @@ import org.springframework.web.client.RestTemplate;
 
 public class Handler implements com.openfaas.model.IHandler {
 
+    protected static final String CLOUD_EVENT_ATTRIBUTE_ADAPTER_REQUEST_URL = "adapterRequestUrl";
+    protected static final String CLOUD_EVENT_ATTRIBUTE_ADAPTER_REQUEST_METHOD = "adapterRequestMethod";
+    protected static final String CLOUD_EVENT_ATTRIBUTE_DATA = "data";
     private RestTemplate restTemplate = new RestTemplate();
 
     public IResponse Handle(IRequest req) {
@@ -21,16 +24,17 @@ public class Handler implements com.openfaas.model.IHandler {
         try {
             JsonNode cloudEvent = mapper.readTree(message);
             System.out.println(cloudEvent);
-            String requestUrl = cloudEvent.get("adapterRequestUrl").asText();
-            String requestMethod = cloudEvent.get("adapterRequestMethod").asText();
+            String requestUrl = cloudEvent.get(CLOUD_EVENT_ATTRIBUTE_ADAPTER_REQUEST_URL).asText();
+            String requestMethod = cloudEvent.get(CLOUD_EVENT_ATTRIBUTE_ADAPTER_REQUEST_METHOD).asText();
             System.out.println("RequestUrl is:'" + requestUrl + "'");
             if (!requestUrl.isEmpty()) {
-                String dataElement = cloudEvent.get("data").asText();
+                String dataElement = cloudEvent.get(CLOUD_EVENT_ATTRIBUTE_DATA).asText();
                 HttpEntity<String> httpDataEntity = new HttpEntity<>(dataElement);
                 restTemplate.exchange(requestUrl, HttpMethod.resolve(requestMethod), httpDataEntity, String.class);
                 res.setStatusCode(HttpStatus.OK.value());
             } else {
                 res.setStatusCode(HttpStatus.BAD_REQUEST.value());
+                res.setBody("Request URL empty");
             }
         } catch (Exception e) {
             res.setStatusCode(HttpStatus.BAD_REQUEST.value());
@@ -38,6 +42,7 @@ public class Handler implements com.openfaas.model.IHandler {
             e.printStackTrace();
         }
         System.out.println("Returning status '" + res.getStatusCode() + "'");
+        res.setBody("[]");
         return res;
     }
 
