@@ -19,7 +19,18 @@
       "user-agent": "Browser",
       "accept": "*/*"
     },
-    "base64body": "Qm9keQ=="
+    "base64body": {
+      "article": {
+          "title": "How to train two dragons",
+          "description": "Ever wonder how?",
+          "body": "Qm9keQ==",
+          "tagList": [
+              "dragons",
+              "training"
+          ]
+      }
+    }
+
   },
   "correlationid": null,
   "createdfrom": null,
@@ -37,6 +48,6 @@
   "returntopic": "transform-request",
   "dataref": null,
   "subject": null,
-  "adapterRequestUrl": "http://localhost:8080/testPath/testPath2?key=value&key1=value1",
+  "adapterRequestUrl": "http://localhost:8080/testPath/articles?key=value&key1=value1",
   "adapterRequestMethod": "POST"
 }
