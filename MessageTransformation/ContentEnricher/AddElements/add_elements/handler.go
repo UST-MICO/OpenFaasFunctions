@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 )
 
-// Modify this map to for adding your own values
+// Modify this map for adding your own values
 var addedData = map[string]interface{}{
 	"added_val_1": 23,
 	"added_val_2": "foo",
