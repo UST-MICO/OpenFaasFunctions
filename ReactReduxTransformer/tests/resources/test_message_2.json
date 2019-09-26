@@ -1,0 +1,42 @@
+{
+  "id": "232fbcd7-795c-42a8-b3c7-17dd0ce2f8d2",
+  "source": "/http-to-messaging-adapter",
+  "type": null,
+  "specversion": "0.2",
+  "time": "2019-09-25T20:40:45.011+02:00",
+  "schemaurl": null,
+  "contenttype": null,
+  "data": {
+    "header": { 
+      "content-length": "4",
+      "accept-language": "de,en-US;q=0.7,en;q=0.3",
+      "cookie": "cookie",
+      "host": "localhost:8081",
+      "content-type": "text/plain;charset=UTF-8",
+      "connection": "keep-alive",
+      "headerkey": "headerValue",
+      "accept-encoding": "gzip, deflate",
+      "user-agent": "Browser",
+      "accept": "*/*"
+    },
+    "base64body": "QnV0IEkgbXVzdCBleHBsYWluIHRvIHlvdSBob3cgYWxsIHRoaXMgbWlzdGFrZW4gaWRlYSBvZiBkZW5vdW5jaW5nIHBsZWFzdXJlIGFuZCBwcmFpc2luZyBwYWluIHdhcyBib3JuIGFuZCBJIHdpbGwgZ2l2ZSB5b3UgYSBjb21wbGV0ZSBhY2NvdW50IG9mIHRoZSBzeXN0ZW0sIGFuZCBleHBvdW5kIHRoZSBhY3R1YWwgdGVhY2hpbmdzIG9mIHRoZSBncmVhdCBleHBsb3JlciBvZiB0aGUgdHJ1dGgsIHRoZSBtYXN0ZXItYnVpbGRlciBvZiBodW1hbiBoYXBwaW5lc3MuIE5vIG9uZSByZWplY3RzLCBkaXNsaWtlcywgb3IgYXZvaWRzIHBsZWFzdXJlIGl0c2VsZiwgYmVjYXVzZSBpdCBpcyBwbGVhc3VyZSwgYnV0IGJlY2F1c2UgdGhvc2Ugd2hvIGRvIG5vdCBrbm93IGhvdyB0byBwdXJzdWUgcGxlYXN1cmUgcmF0aW9uYWxseSBlbmNvdW50ZXIgY29uc2VxdWVuY2VzIHRoYXQgYXJlIGV4dHJlbWVseSBwYWluZnVsLiBOb3IgYWdhaW4gaXMgdGhlcmUgYW55b25lIHdobyBsb3ZlcyBvciBwdXJzdWVzIG9yIGRlc2lyZXMgdG8gb2J0YWluIHBhaW4gb2YgaXRzZWxmLCBiZWNhdXNlIGl0IGlzIHBhaW4sIGJ1dCBiZWNhdXNlIG9jY2FzaW9uYWxseSBjaXJjdW1zdGFuY2VzIG9jY3VyIGluIHdoaWNoIHRvaWwgYW5kIHBhaW4gY2FuIHByb2N1cmUgaGltIHNvbWUgZ3JlYXQgcGxlYXN1cmUuIFRvIHRha2UgYSB0cml2aWFsIGV4YW1wbGUsIHdoaWNoIG9mIHVzIGV2ZXIgdW5kZXJ0YWtlcyBsYWJvcmlvdXMgcGh5c2ljYWwgZXhlcmNpc2UsIGV4Y2VwdCB0byBvYnRhaW4gc29tZSBhZHZhbnRhZ2UgZnJvbSBpdD8gQnV0IHdobyBoYXMgYW55IHJpZ2h0IHRvIGZpbmQgZmF1bHQgd2l0aCBhIG1hbiB3aG8gY2hvb3NlcyB0byBlbmpveSBhIHBsZWFzdXJlIHRoYXQgaGFzIG5vIGFubm95aW5nIGNvbnNlcXVlbmNlcywgb3Igb25lIHdobyBhdm9pZHMgYSBwYWluIHRoYXQgcHJvZHVjZXMgbm8gcmVzdWx0YW50IHBsZWFzdXJlPyBPbiB0aGUgb3RoZXIgaGFuZCwgd2UgZGVub3VuY2Ugd2l0aCByaWdodGVvdXMgaW5kaWduYXRpb24gYW5kIGRpc2xpa2UgbWVuIHdobyBhcmUgc28gYmVndWlsZWQgYW5kIGRlbW9yYWxpemVkIGJ5IHRoZSBjaGFybXMgb2YgcGxlYXN1cmUgb2YgdGhlIG1vbWVudCwgc28gYmxpbmRlZCBieSBkZXNpcmUsIHRoYXQgdGhleSBjYW5ub3QgZm9yZXNlZQ=="
+  },
+  "correlationid": null,
+  "createdfrom": null,
+  "route": null,
+  "routingslip": null,
+  "istestmessage": false,
+  "filteroutbeforetopic": null,
+  "iserrormessage": false,
+  "errormessage": null,
+  "errortrace": null,
+  "expirydate": null,
+  "sequenceid": null,
+  "sequencenumber": null,
+  "sequencesize": null,
+  "returntopic": "transform-request",
+  "dataref": null,
+  "subject": null,
+  "adapterRequestUrl": "http://localhost:8080/testPath/testPath2?key=value&key1=value1",
+  "adapterRequestMethod": "POST"
+}
