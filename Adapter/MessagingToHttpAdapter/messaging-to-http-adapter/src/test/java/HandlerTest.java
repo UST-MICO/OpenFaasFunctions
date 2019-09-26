@@ -30,47 +30,59 @@ public class HandlerTest {
     @Captor
     private ArgumentCaptor<HttpEntity> dataArgumentCaptor;
 
-    @Test
-    public void handlerNoUrl() {
-        Handler handler = new Handler();
-        String event = "{\r\n   \"specversion\":\"0.2\",\r\n   \"type\":\"io.github.ust.mico.result\",\r\n   \"source\":\"/router\",\r\n   \"id\":\"A234-1234-1234\",\r\n   \"time\":\"2019-05-08T17:31:00Z\",\r\n   \"contentType\":\"application/json\",\r\n   \"adapterRequestUrl\":\"test\",\r\n   \"data\":\"test\"\r\n}";
-        Request request = new Request(event, null);
-        IResponse response = handler.Handle(request);
-        assertThat(response.getStatusCode(), is(equalTo(HttpStatus.BAD_REQUEST.value())));
-    }
 
     @Test
-    public void handlerEmptyMessage() {
-        Handler handler = new Handler();
-        String event = "";
-        Request request = new Request(event, null);
-        IResponse response = handler.Handle(request);
-        assertThat(response.getStatusCode(), is(equalTo(HttpStatus.BAD_REQUEST.value())));
-    }
-
-    @Test
-    public void handlerCorrect() {
+    public void handlerNewType() {
         Handler handler = new Handler();
         handler.setRestTemplate(restTemplate);
         String url = "http://localhost:3000/test";
-        String test = "test";
         String event = "{\n" +
-                "   \"specversion\":\"0.2\",\n" +
-                "   \"type\":\"io.github.ust.mico.result\",\n" +
-                "   \"source\":\"/router\",\n" +
-                "   \"id\":\"A234-1234-1234\",\n" +
-                "   \"time\":\"2019-05-08T17:31:00Z\",\n" +
-                "   \"contentType\":\"application/json\",\n" +
-                "   \"adapterRequestUrl\":\"" + url + "\",\n" +
-                "   \"adapterRequestMethod\" : \"POST\",\n" +
-                "   \"data\":\"" + test + "\"\n" +
+                "  \"id\": \"232fbcd7-795c-42a8-b3c7-17dd0ce2f8d2\",\n" +
+                "  \"source\": \"/http-to-messaging-adapter\",\n" +
+                "  \"type\": null,\n" +
+                "  \"specversion\": \"0.2\",\n" +
+                "  \"time\": \"2019-09-25T20:40:45.011+02:00\",\n" +
+                "  \"schemaurl\": null,\n" +
+                "  \"contenttype\": null,\n" +
+                "  \"data\": {\n" +
+                "    \"header\": {\n" +
+                "      \"content-length\": \"4\",\n" +
+                "      \"accept-language\": \"de,en-US;q=0.7,en;q=0.3\",\n" +
+                "      \"cookie\": \"cookie\",\n" +
+                "      \"host\": \"localhost:8081\",\n" +
+                "      \"content-type\": \"text/plain;charset=UTF-8\",\n" +
+                "      \"connection\": \"keep-alive\",\n" +
+                "      \"headerkey\": \"headerValue\",\n" +
+                "      \"accept-encoding\": \"gzip, deflate\",\n" +
+                "      \"user-agent\": \"Browser\",\n" +
+                "      \"accept\": \"*/*\"\n" +
+                "    },\n" +
+                "    \"base64body\": \"Qm9keQ==\"\n" +
+                "  },\n" +
+                "  \"correlationid\": null,\n" +
+                "  \"createdfrom\": null,\n" +
+                "  \"route\": null,\n" +
+                "  \"routingslip\": null,\n" +
+                "  \"istestmessage\": false,\n" +
+                "  \"filteroutbeforetopic\": null,\n" +
+                "  \"iserrormessage\": false,\n" +
+                "  \"errormessage\": null,\n" +
+                "  \"errortrace\": null,\n" +
+                "  \"expirydate\": null,\n" +
+                "  \"sequenceid\": null,\n" +
+                "  \"sequencenumber\": null,\n" +
+                "  \"sequencesize\": null,\n" +
+                "  \"returntopic\": \"transform-request\",\n" +
+                "  \"dataref\": null,\n" +
+                "  \"subject\": null,\n" +
+                "  \"adapterRequestUrl\": \"" + url + "\",\n" +
+                "  \"adapterRequestMethod\": \"POST\"\n" +
                 "}";
         Request request = new Request(event, null);
         IResponse response = handler.Handle(request);
         Mockito.verify(restTemplate, Mockito.times(1)).exchange(urlArgumentCaptor.capture(), eq(HttpMethod.POST), dataArgumentCaptor.capture(), eq(String.class));
         assertThat(urlArgumentCaptor.getValue(), is(equalTo(url)));
-        assertThat(dataArgumentCaptor.getValue().getBody(), is(equalTo(test)));
-        assertThat(response.getStatusCode(), is(equalTo(HttpStatus.OK.value())));
+        assertThat(response.getStatusCode(), is(equalTo(HttpStatus.INTERNAL_SERVER_ERROR.value())));
     }
 
 }
