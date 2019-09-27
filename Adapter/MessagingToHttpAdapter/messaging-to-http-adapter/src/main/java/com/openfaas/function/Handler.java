@@ -37,7 +37,6 @@ public class Handler implements com.openfaas.model.IHandler {
         PrintStream ps = new PrintStream(baos);
         PrintStream old = System.out;
         System.setOut(ps);
-
         Response res = new Response();
         String message = req.getBody();
         ObjectMapper mapper = new ObjectMapper();
@@ -114,7 +113,11 @@ public class Handler implements com.openfaas.model.IHandler {
         for (Map.Entry<String, List<String>> entry : httpHeaders.entrySet()) {
             String key = entry.getKey();
             String value = entry.getValue().stream().collect(Collectors.joining(","));
-            headers.put(key, value);
+            if (!key.equalsIgnoreCase("Transfer-Encoding")) {
+                headers.put(key, value);
+            } else {
+                System.out.println("Remove Transfer-Encoding header");
+            }
         }
         return headers;
     }
