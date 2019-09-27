@@ -3,7 +3,7 @@ provider:
   name: openfaas
   gateway: http://127.0.0.1:8080
 functions:
-  flatten:
+  react-redux-transformer:
     lang: python3
-    handler: ./flatten
-    image: flatten:latest
+    handler: ./react_redux_transformer
+    image: ustmico/react-redux-transformer:latest
