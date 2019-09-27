@@ -33,5 +33,5 @@ def handle(req):
         old_body = base64.b64decode(msg['data']['base64body']['article']['body']).decode()
         new_body = base64.b64encode(transform(old_body).encode()).decode()
         msg['data']['base64body']['article']['body'] = new_body
-    return dumps(msg)
+    return dumps([msg])
 
