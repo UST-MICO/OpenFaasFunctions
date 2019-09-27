@@ -15,6 +15,8 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.time.ZonedDateTime;
@@ -31,6 +33,10 @@ public class Handler implements com.openfaas.model.IHandler {
     private RestTemplate restTemplate = new RestTemplate();
 
     public IResponse Handle(IRequest req) {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        PrintStream ps = new PrintStream(baos);
+        PrintStream old = System.out;
+        System.setOut(ps);
         Response res = new Response();
         String message = req.getBody();
         ObjectMapper mapper = new ObjectMapper();
@@ -41,56 +47,63 @@ public class Handler implements com.openfaas.model.IHandler {
                 HttpRequestWrapper httpRequestWrapper = mapper.treeToValue(cloudEvent.getData().get(), HttpRequestWrapper.class);
                 Map<String, JsonNode> extensions = cloudEvent.getExtensionsAsMap().get();
                 String adapterRequestUrl = extensions.get(CLOUD_EVENT_ATTRIBUTE_ADAPTER_REQUEST_URL).asText();
+                if (!adapterRequestUrl.startsWith("http://")) {
+                    adapterRequestUrl = "http://" + adapterRequestUrl;
+                }
                 String method = extensions.get(CLOUD_EVENT_ATTRIBUTE_ADAPTER_REQUEST_METHOD).asText();
                 String body = httpRequestWrapper.getBody();
-                if (body != null && !body.isEmpty()) {
-                    HttpEntity<String> httpDataEntity;
-                    if (httpRequestWrapper.getHeader().isEmpty()) {
-                        httpDataEntity = new HttpEntity<>(body);
-                    } else {
-                        MultiValueMap<String, String> multiValueHeaderMap = new LinkedMultiValueMap<>();
-                        for (Map.Entry<String, String> entry : httpRequestWrapper.getHeader().entrySet()) {
+                HttpEntity<String> httpDataEntity;
+                if (httpRequestWrapper.getHeader().isEmpty()) {
+                    httpDataEntity = new HttpEntity<>(body);
+                } else {
+                    MultiValueMap<String, String> multiValueHeaderMap = new LinkedMultiValueMap<>();
+                    for (Map.Entry<String, String> entry : httpRequestWrapper.getHeader().entrySet()) {
+                        if (!entry.getKey().equalsIgnoreCase("accept-encoding")) {
                             multiValueHeaderMap.put(entry.getKey(), Collections.singletonList(entry.getValue()));
                         }
-                        httpDataEntity = new HttpEntity<>(body, multiValueHeaderMap);
                     }
-                    String responseBody = null;
-                    String responseStatusCode = "500";
-                    Map<String, String> headers;
-                    try {
-                        ResponseEntity<String> responseEntity = restTemplate.exchange(adapterRequestUrl, HttpMethod.resolve(method.toUpperCase()), httpDataEntity, String.class);
-                        responseBody = responseEntity.getBody();
-                        responseStatusCode = "" + responseEntity.getStatusCode().value();
-                        headers = getHeader(responseEntity.getHeaders());
-                    } catch (HttpClientErrorException e) {
-                        e.printStackTrace();
-                        responseStatusCode = "" + e.getStatusCode().value();
-                        responseBody = e.getResponseBodyAsString();
-                        headers = getHeader(e.getResponseHeaders());
-                    }
-
-
-                    MicoCloudEventImpl<JsonNode> responseCloudEvent = getResponseCloudEvent(cloudEvent);
-                    System.out.println("Got response body:" + responseBody + "with status code:" + responseStatusCode);
-                    responseCloudEvent.setExtension(CLOUD_EVENT_ATTRIBUTE_HTTP_RESPONSE_STATUS, mapper.valueToTree(responseStatusCode));
-
-                    HttpRequestWrapper httpReturnWrapper = new HttpRequestWrapper();
-                    if (responseBody != null && !responseBody.isEmpty()) {
-                        httpReturnWrapper.setBody(responseBody);
-                    }
-                    httpReturnWrapper.setHeader(headers);
-                    responseCloudEvent.setData(mapper.valueToTree(httpReturnWrapper));
-                    res.setStatusCode(HttpStatus.OK.value());
-                    CloudEventSerializer cloudEventSerializer = new CloudEventSerializer();
-                    res.setBody(Json.encode(Collections.singleton(responseCloudEvent)));
+                    httpDataEntity = new HttpEntity<>(body, multiValueHeaderMap);
                 }
+                String responseBody = null;
+                String responseStatusCode = "500";
+                Map<String, String> headers;
+                try {
+                    ResponseEntity<String> responseEntity = restTemplate.exchange(adapterRequestUrl, HttpMethod.resolve(method.toUpperCase()), httpDataEntity, String.class);
+                    responseBody = responseEntity.getBody();
+                    responseStatusCode = "" + responseEntity.getStatusCode().value();
+                    headers = getHeader(responseEntity.getHeaders());
+                } catch (HttpClientErrorException e) {
+                    e.printStackTrace();
+                    responseStatusCode = "" + e.getStatusCode().value();
+                    responseBody = e.getResponseBodyAsString();
+                    headers = getHeader(e.getResponseHeaders());
+                }
+
+
+                MicoCloudEventImpl<JsonNode> responseCloudEvent = getResponseCloudEvent(cloudEvent);
+                System.out.println("Got response body:" + responseBody + "with status code:" + responseStatusCode);
+                responseCloudEvent.setExtension(CLOUD_EVENT_ATTRIBUTE_HTTP_RESPONSE_STATUS, mapper.valueToTree(responseStatusCode));
+
+                HttpRequestWrapper httpReturnWrapper = new HttpRequestWrapper();
+                if (responseBody != null && !responseBody.isEmpty()) {
+                    httpReturnWrapper.setBody(responseBody);
+                }
+                httpReturnWrapper.setHeader(headers);
+                responseCloudEvent.setData(mapper.valueToTree(httpReturnWrapper));
+                res.setStatusCode(HttpStatus.OK.value());
+                CloudEventSerializer cloudEventSerializer = new CloudEventSerializer();
+                System.out.flush();
+                responseCloudEvent.setExtension("FaaSLog", mapper.valueToTree(baos.toString()));
+                res.setBody(Json.encode(Collections.singleton(responseCloudEvent)));
             }
+
         } catch (Exception e) {
             res.setStatusCode(HttpStatus.INTERNAL_SERVER_ERROR.value());
             res.setBody(e.getMessage());
             e.printStackTrace();
         }
         System.out.println("Returning status '" + res.getStatusCode() + "'");
+        System.setOut(old);
         return res;
     }
 
@@ -100,7 +113,11 @@ public class Handler implements com.openfaas.model.IHandler {
         for (Map.Entry<String, List<String>> entry : httpHeaders.entrySet()) {
             String key = entry.getKey();
             String value = entry.getValue().stream().collect(Collectors.joining(","));
-            headers.put(key, value);
+            if (!key.equalsIgnoreCase("Transfer-Encoding")) {
+                headers.put(key, value);
+            } else {
+                System.out.println("Remove Transfer-Encoding header");
+            }
         }
         return headers;
     }
